@@ -1,57 +1,44 @@
+var setup;
+var draw;
+
 var RESOLUTION= 32;
-var px;
 var scale;
+var hue = random();
+var points = [];
 
-//base color
-var minColor = 200;
-var widthColor = 100;
+var socket = io.connect('http://'+window.location.hostname);
 
-//user color
-var brush = 0;
-
-var setup = function() {
-  createGraphics(600, 600);
+setup = function() {
+  createGraphics(1000, 1000);
   colorMode("hsb");
-  px = new Array(RESOLUTION);
-  for (var i = 0; i<px.length; i++) {
-    px[i] = new Array(RESOLUTION);
-  }
-
-  for (var i = 0; i<px.length; i++) {
-    for (var j = 0; j<px[0].length; j++) {
-      px[i][j]=(minColor+widthColor*random())/360;
-    }
-  }
-
   scale = width/RESOLUTION;
+  noFill();
+  stroke(0,0,0.5);
+  strokeWeight(10);
+  rect(0,0,width,height);
 };
 
-var draw = function() {
-  for (var i = 0; i<px.length; i++) {
-    for (var j = 0; j<px[0].length; j++) {
-      px[i][j]=backColor(px[i][j], minColor+widthColor, minColor);
-      fill(px[i][j],1,1);
-      noStroke();
-      rect(i*scale, j*scale, scale, scale);
-    }
-  }
+draw = function() {
 };
 
-function backColor(val, maxVal, minVal){
-  val*=360;
-  val+=1;
-  if(val>(maxVal)){
-    val=minVal;
-  }
-  return val/360;
-}
-
+var xlast=0;
+var ylast=0;
 
 var paint = function(x,y){
-  for (var i=-1; i<2; i++){
-    for (var j=-1; j<2; j++){
-      if(x+i < px.length && x+i >= 0 && y+j < px[0].length && y+j>=0){
-        px[x+i][y+j] = brush/360;
+  var p = { 'x':x, 'y':y, 'hue' : hue}
+
+  if (xlast!=x || ylast!=y){
+    points.push(p);
+    xlast = x;
+    ylast = y;
+  }
+
+  for (var i=-1; i<1; i++){
+    for (var j=-1; j<1; j++){
+      if(x+i < width/scale && x+i >= 0 && y+j < height/scale && y+j>=0){
+        fill(hue,1,1);
+        noStroke();
+        rect(x*scale, y*scale, scale, scale);
       }
     }
   }
@@ -80,3 +67,11 @@ var touchEnded= function() {
     var y = Math.floor(touchY/scale);
     paint(x,y);
 }
+
+setInterval(function(){
+  points.forEach(function(point){
+    socket.emit('point', point);
+    console.log(point);
+  })
+  points = [];
+}, 50);
