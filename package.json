@@ -1,0 +1,29 @@
+{
+  "name": "mobile-led-grid",
+  "version": "0.0.0",
+  "description": "controlling an LED grid from a website",
+  "main": "run_server.js",
+  "dependencies": {
+    "node-static": "~0.7.2",
+    "serialport": "~1.2.4",
+    "socket.io": "~0.9.16"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/whichlight/mobile-led-grid.git"
+  },
+  "keywords": [
+    "art",
+    "led",
+    "processing"
+  ],
+  "author": "whichlight",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/whichlight/mobile-led-grid/issues"
+  }
+}
