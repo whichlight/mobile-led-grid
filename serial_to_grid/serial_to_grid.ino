@@ -29,7 +29,7 @@ void setup() {
 
   for(int y=0; y < matrix.width(); y++) {
     for(int x=0; x < matrix.height(); x++) {
-      matrix.drawPixel(x, y, matrix.Color333(3,3,3));
+      matrix.drawPixel(x, y, matrix.Color333(0,0,0));
     }
   }
 }
