@@ -37,7 +37,7 @@ setup = function() {
 
 draw = function() {
 
-  addBufferPoints(buffer[bufferindex]);
+//  addBufferPoints(buffer[bufferindex]);
   points.forEach(function(point){
    point.display();
    point.update();

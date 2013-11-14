@@ -17,9 +17,6 @@ var serialPort = new SerialPort("/dev/tty.usbmodem1411", {
   baudrate: 9600
 });
 
-process.stdin.resume();
-process.stdin.setEncoding('utf8');
-
 var points = []; //logic for the vis
 
 
@@ -38,6 +35,7 @@ serialPort.on("open", function () {
     var h = Math.floor(p.hue *1535);
     var str = p.x+','+p.y+','+h+','+Math.floor(p.s*255)+','+Math.floor(255)+';';
     serialPort.write(str, function(err, res){
+      console.log(str);
       if (err) console.log('err '+err);
     });
   });
