@@ -14,6 +14,15 @@ var ylast=0;
 
 var socket = io.connect('http://'+window.location.hostname);
 
+//buffer[time][x+y*res] = val
+var bufferlen = 100;
+var buffer = new Array(bufferlen);
+var bufferindex = 0;
+for(var i=0;i<bufferlen;i++){
+  buffer[i]={};
+}
+
+
 
 //setup and draw loop
 setup = function() {
@@ -142,15 +151,9 @@ Point.prototype.update = function(){
 }
 
 Point.prototype.display = function() {
-  for (var i=-1; i<1; i++){
-    for (var j=-1; j<1; j++){
-      if(this.x+i < width/scale && this.x+i >= 0 && this.y+j < height/scale && this.y+j>=0){
         fill(this.hue,this.s,this.life);
         noStroke();
         rect(this.x*scale, this.y*scale, scale, scale);
-      }
-    }
-  }
 }
 
 
