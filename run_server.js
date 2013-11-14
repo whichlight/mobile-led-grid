@@ -33,7 +33,7 @@ serialPort.on("open", function () {
 
   eventEmitter.on('send_point_serial', function(p){
     var h = Math.floor(p.hue *1535);
-    var str = p.x+','+p.y+','+h+','+Math.floor(p.s*255)+','+Math.floor(255)+';';
+    var str = p.x+','+p.y+','+h+','+Math.floor(p.s*255)+','+Math.floor(p.life*255)+';';
     serialPort.write(str, function(err, res){
       console.log(str);
       if (err) console.log('err '+err);
@@ -43,9 +43,17 @@ serialPort.on("open", function () {
 
 io.sockets.on('connection', function (socket) {
   socket.on('point', function (data) {
-   eventEmitter.emit('send_point_serial', new Point(data.x, data.y, data.hue, 1,1));
+   new Point(data.x, data.y, data.hue, 1,1);
   });
 });
+
+var draw = function(){
+  points.forEach(function(p){
+    p.display();
+    p.update();
+  })
+}
+
 
 function Point(x,y,h,s,l) {
   this.hue = h;
@@ -53,4 +61,29 @@ function Point(x,y,h,s,l) {
   this.life = l;
   this.x=x;
   this.y=y;
+  this.display();
+  this.done();
+
 }
+
+Point.prototype.update = function(){
+  this.life-=0.1;
+  if(this.life<0){
+    points.splice(points.indexOf(this),1);
+  }
+}
+
+Point.prototype.display = function() {
+   eventEmitter.emit('send_point_serial', this);
+}
+
+Point.prototype.done= function() {
+  if(this.life>0){
+   var that = this;
+  setTimeout(function(){
+    var p = new Point(that.x, that.y, 0,0,0);
+  },1000);
+  }
+}
+
+
